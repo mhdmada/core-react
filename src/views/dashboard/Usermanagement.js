@@ -1,8 +1,8 @@
-import React, { lazy } from 'react'
+import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 
-
 import {
+  CButton,
   CBadge,
   CCard,
   CCardBody,
@@ -13,10 +13,6 @@ import {
 } from '@coreui/react'
 
 
-import { DocsLink } from 'src/reusable'
-
-import usersData from '../users/UsersData'
-
 const getBadge = status => {
   switch (status) {
     case 'Active': return 'success'
@@ -26,20 +22,37 @@ const getBadge = status => {
     default: return 'primary'
   }
 }
-const fields = ['name','registered', 'role', 'status']
+const fields = ['id','name', 'password', 'username']
 
 const UserManagement = () => {
+  const [data, setData] = useState({ data: [] });
+ 
+  useEffect(async () => {
+    const result = await axios(
+      'http://sharingvision-backend.herokuapp.com/user/',
+    );
+    setData(result.data);
+  });
+
+
   return (
     <>
       <CRow>
         <CCol>
           <CCard>
             <CCardHeader>
-              Combined All dark Table
+              User Management
+
+              <CRow className="align-items-center">
+              <CCol col="6" sm="4" md="2" xl className="mb-3 mb-xl-0">
+              <CButton block color="success">Create</CButton>
+              </CCol>
+              </CRow>
+
             </CCardHeader>
             <CCardBody>
             <CDataTable
-              items={usersData}
+              items={data.data}
               fields={fields}
               dark
               hover
